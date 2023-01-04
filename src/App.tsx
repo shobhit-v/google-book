@@ -7,24 +7,34 @@ import Pagination from './Components/Pagination'
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import API from './Service/API';
 
 
 function App() {
   const [results, setResults] = useState("")
   const [pageIndex, setPageIndex] = useState(0);
+  const [pageRow, setPageRow] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
-  const onResults = (res: any) => {
+  const [searchKey, setSearchKey] = useState("");
+  const onResults = (res: any, searchedKey: string) => {
     if (res) {
-      // console.log('res---', );
       setTotalItems(res.data.totalItems);
       setResults(res);
+      setSearchKey(searchedKey)
     }
   }
-  const PageIndexChange = (index: number) => {
+  const PageIndexChange = async (index: number) => {
     setPageIndex(index);
+    const res: any = searchKey && await API(searchKey, pageRow, pageIndex);
+    setResults(res);
   };
+  const onPageRowChange = async (row: number) => {
+    alert('row'+row);
+    setPageRow(row);
+    const res: any = searchKey && await API(searchKey, pageRow, pageIndex);
+    setResults(res);
+  }
   return (
     <div>
       <Box sx={{ flexGrow: 1 }}>
@@ -45,10 +55,10 @@ function App() {
         </AppBar>
       </Box>
       <Container>
-        <Search onResults={onResults} pageIndex={pageIndex} />
+        <Search onResults={onResults} />
         <Results list={results} />
         <Container>
-          {results ? <Pagination onPageIndexChange={PageIndexChange} totalItems={totalItems}/> : ""}
+          {results ? <Pagination onPageIndexChange={PageIndexChange} onPageRowChange={onPageRowChange} totalItems={totalItems} /> : ""}
         </Container>
       </Container>
     </div>

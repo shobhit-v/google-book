@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from 'react'
+
 const API = async (searchKey: string, maxResults: number=10, startIndex: number=0) => {
     // const [serachString, setSearch] = useState("hello");
     axios.interceptors.request.use(function (config: any) {
